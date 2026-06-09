@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GCS STEEL | Golden Industrial Excellence in Hotelware</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      primary: '#735c00', 'primary-container': '#d4af37',
+      'on-primary': '#ffffff', 'on-primary-container': '#554300',
+      secondary: '#8c4b55', 'secondary-container': '#feaab6',
+      surface: '#fbf9f4', 'surface-container': '#f0eee9',
+      'surface-container-low': '#f5f3ee', 'surface-container-high': '#eae8e3',
+      'surface-container-highest': '#e4e2dd', 'surface-container-lowest': '#ffffff',
+      'on-surface': '#1b1c19', 'on-surface-variant': '#4d4635',
+      outline: '#7f7663', 'outline-variant': '#d0c5af',
+      tertiary: '#586062',
+    },
+    fontFamily: { sans: ['Montserrat','sans-serif'] },
+  }}
+}
+</script>
+<style>
+  * { font-family:'Montserrat',sans-serif; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+  .gold-gradient { background:linear-gradient(135deg,#d4af37 0%,#735c00 100%); }
+  .card-hover { transition:transform .3s ease,box-shadow .3s ease; }
+  .card-hover:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(115,92,0,.12); }
+  .hero-gradient { background:linear-gradient(135deg,#fbf9f4 0%,#f0eee9 100%); }
+</style>
+</head>
+<body class="bg-surface text-on-surface overflow-x-hidden">
+
+<!-- ═══ TOP NAV ═══════════════════════════════════════════════════════════ -->
+<nav id="main-nav" class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant transition-all duration-200 h-20">
+  <div class="max-w-7xl mx-auto px-4 md:px-16 h-full flex justify-between items-center">
+    <!-- Logo -->
+    <a href="index.html" class="flex items-center gap-3">
+      <span class="text-2xl font-black text-primary tracking-tight">GCS STEEL</span>
+      <span class="hidden sm:inline text-xs font-bold text-primary-container uppercase tracking-widest border border-primary-container px-2 py-0.5 rounded">Hotelware</span>
+    </a>
+    <!-- Desktop Links -->
+    <div class="hidden md:flex items-center gap-10">
+      <a href="index.html" class="text-sm font-bold text-primary border-b-2 border-primary-container pb-1">Home</a>
+      <a href="catalog.html" class="text-sm font-semibold text-secondary hover:text-primary transition-colors">Products</a>
+      <a href="about.html" class="text-sm font-semibold text-secondary hover:text-primary transition-colors">About Us</a>
+      <a href="contact.html" class="text-sm font-semibold text-secondary hover:text-primary transition-colors">Contact</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="contact.html" class="hidden md:inline-flex bg-primary text-white px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-primary-container hover:text-on-primary-container transition-colors">
+        Inquiry
+      </a>
+      <!-- Hamburger -->
+      <button id="mobile-menu-btn" class="md:hidden p-2 text-primary">
+        <span class="material-symbols-outlined text-3xl">menu</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ MOBILE DRAWER ═════════════════════════════════════════════════════ -->
+<div id="mobile-overlay" class="fixed inset-0 bg-black/40 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+<div id="mobile-drawer" class="fixed top-0 right-0 h-full w-72 bg-surface z-50 translate-x-full transition-transform duration-300 shadow-2xl border-l border-outline-variant flex flex-col">
+  <div class="flex justify-between items-center p-5 border-b border-outline-variant">
+    <span class="text-xl font-black text-primary">GCS STEEL</span>
+    <button id="mobile-close-btn" class="p-1 text-secondary"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <nav class="flex flex-col gap-1 p-5 flex-1">
+    <a href="index.html" class="flex items-center gap-3 px-3 py-3 rounded-lg text-primary font-bold bg-surface-container border-l-4 border-primary-container">
+      <span class="material-symbols-outlined text-sm">home</span> Home
+    </a>
+    <a href="catalog.html" class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary font-semibold hover:bg-surface-container hover:text-primary transition-colors">
+      <span class="material-symbols-outlined text-sm">category</span> Products
+    </a>
+    <a href="about.html" class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary font-semibold hover:bg-surface-container hover:text-primary transition-colors">
+      <span class="material-symbols-outlined text-sm">factory</span> About Us
+    </a>
+    <a href="contact.html" class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary font-semibold hover:bg-surface-container hover:text-primary transition-colors">
+      <span class="material-symbols-outlined text-sm">mail</span> Contact
+    </a>
+  </nav>
+  <div class="p-5 border-t border-outline-variant">
+    <a href="contact.html" class="block w-full gold-gradient text-white text-center py-3 rounded-lg text-xs font-bold uppercase tracking-widest">Send Inquiry</a>
+  </div>
+</div>
+
+<!-- ═══ MAIN CONTENT ══════════════════════════════════════════════════════ -->
+<main class="pt-20">
+
+  <!-- Hero -->
+  <section class="relative min-h-[82vh] flex items-center hero-gradient overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 md:px-16 grid md:grid-cols-2 gap-12 items-center py-16">
+      <div class="z-10">
+        <span class="inline-block bg-secondary-container text-on-surface-variant px-3 py-1 rounded text-xs font-bold uppercase tracking-widest mb-4">Golden Industrial Excellence</span>
+        <h1 class="text-4xl md:text-6xl font-black text-primary leading-tight mb-6">Excellence in Stainless Steel Hotelware</h1>
+        <p class="text-base md:text-lg text-secondary mb-8 max-w-lg leading-relaxed">
+          Leading manufacturer in HSIIDC, Kundli, Sonipat. Premium gold & rose-gold stainless steel chafing dishes and buffetware for India's hospitality sector.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="catalog.html" class="gold-gradient text-white px-8 py-4 rounded-lg text-xs font-bold uppercase tracking-widest shadow-lg hover:shadow-xl hover:opacity-90 transition-all">
+            Explore Catalogue
+          </a>
+          <a href="about.html" class="border-2 border-primary-container text-primary px-8 py-4 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-surface-container-high transition-all">
+            Our Facility
+          </a>
+        </div>
+      </div>
+      <div class="relative flex justify-center">
+        <div class="absolute inset-0 bg-primary-container/10 rounded-full blur-3xl scale-150 -z-10"></div>
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXVW5Vu8BFSLQPkihGZp-cl6BLjKPs92v-5Ryf-FHc-ovMoxZeMHirMGyCenE34ZmXRu6ZdsY4i62liONwcMf1lk1OwnDRr9drtuXCROwGPs-ITM5Dy--JzkYKkyy4jNl3-5JarjMchgAn0c23TZ5qx8zqbpS-g9pDYA6YBevh4CaM6lfv4Qtya96MERk5w4-XGe9d4xR5wQeBHyn9FkFI2XV6tE7hg1H4NxI8EjsYbhiPxsO5GThUFq9qFUb562ff-ntPqCq3gaQg"
+             alt="Premium Chafing Dish" class="w-full max-w-lg rounded-xl shadow-2xl border-4 border-surface-container-highest object-cover"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Highlights -->
+  <section class="py-20 max-w-7xl mx-auto px-4 md:px-16">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
+      <div>
+        <h2 class="text-3xl font-bold text-primary mb-2">Top Product Picks</h2>
+        <p class="text-secondary">Our most sought-after commercial buffet solutions in premium finishes.</p>
+      </div>
+      <a href="catalog.html" class="text-primary font-bold text-xs uppercase tracking-widest border-b-2 border-primary-container pb-1 whitespace-nowrap">View All Products →</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <!-- Large Card -->
+      <div class="md:col-span-7 card-hover bg-surface-container-lowest p-6 flex flex-col gap-4 border border-outline-variant rounded-xl reveal-on-scroll">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoYNY6ukihniG0N6DaHqQM-0S69ruS5Q8aMaExuf5Aq9HQPIleUk7rhHWvysQRreoVX0Fchlr4HH-UvmMc3-hD5lJp7mQXZefmBx8snYGXWZn2if0kPemhjfNS4F5U0_fOp_X0kVq2_n2NwB8ijp1NU_f_H49-Wb9DJ91zLQbez6fZ7muEb9ORhrjvtFgWQjGKHdSgG4zJuWpuNUyjKYFSXr9UHobSDpj9sQyWNscEkB3mOLZDQfHwjcoNR9A5VAavrROEPPQ4FsWo"
+             alt="11.45L Large Chafing Dish" class="w-full h-64 object-cover rounded-lg"/>
+        <div>
+          <h3 class="text-xl font-bold text-primary">11.45L Large Chafing Dish</h3>
+          <p class="text-secondary mt-2 text-sm">Maximum capacity for high-volume banquets, featuring our signature mirror gold finish.</p>
+          <a href="contact.html?product=11.45L+Large+Chafing+Dish" class="mt-4 inline-flex items-center gap-1 text-primary-container font-bold text-xs uppercase tracking-widest hover:gap-2 transition-all">
+            Inquire <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+      <!-- Square Card -->
+      <div class="md:col-span-5 card-hover bg-surface-container-lowest p-6 flex flex-col border border-outline-variant rounded-xl reveal-on-scroll">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt25I1rFHME8UvnLnYCpzn_fYoOlTMHXCOAqAHtJ3EMs4NwyvNOV1TH1akcPTkHpF6T27NdVylkTMHRm_O63sn4APkCVMorDcS_Uj0PefBilZkCzkEnHu_aBAjJVYYZ3khKQOovAGjyW3FFHgjIe0hpBEmusHhUeYGBpG-uBxdfFiDHY34UHz5iN3hsQubIhrgEJqe9x80CkliJF9IvuRAKiO9LmThQMxf0lavgSLb5uvpMN26qQSckijBeO8cnY6L_ftA0Krsatkp"
+             alt="Square Hydraulic" class="w-full h-48 object-cover rounded-lg mb-4"/>
+        <div class="mt-auto">
+          <h3 class="text-xl font-bold text-primary">Square Hydraulic</h3>
+          <p class="text-secondary mt-2 text-sm">Smooth-closing hydraulic lid technology in rose-gold accents.</p>
+          <span class="inline-block mt-3 bg-primary-container/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Top Seller</span>
+        </div>
+      </div>
+      <!-- Card Row -->
+      <div class="md:col-span-6 card-hover bg-surface-container-lowest p-6 flex gap-6 border border-outline-variant rounded-xl reveal-on-scroll">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQE_VWvw5h9pvL0hlZRFClpzbMj_Mhli0ClS-DGBqv1Ysj6n3X66ZMZcVy_F85gbbpvYlulcKtC6pv3Zr6muPPl-XpOqKJ31BGTUehZP3SDEAIEznAMTd1CjE9XUEcJs-R0t3CQ5OpNBDZx-wH0bUiZWqmPq2jvb_bgxZb1buYLrPeLyYuccuH9uuLm8UGQvfsOY8SFGlgSNXotEB8e8AoqKtdAIsGyuir9H934c7d2k5Ty5TLyMt6PMHG2myMX0pHrPImgEMcogSh"
+             alt="8L Round" class="w-28 h-28 object-cover rounded-lg flex-shrink-0"/>
+        <div class="flex flex-col justify-center">
+          <h3 class="text-lg font-bold text-primary">8L Round Dish</h3>
+          <p class="text-secondary mt-1 text-sm">Perfect for soups and sauces, now available in premium gold plating.</p>
+        </div>
+      </div>
+      <div class="md:col-span-6 card-hover bg-surface-container-lowest p-6 flex gap-6 border border-outline-variant rounded-xl reveal-on-scroll">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuALkLaT0XuJ6ghL6yuSvVM6W6lLY16YSXBVIV-39a39uaskCN3SGY2FW7lFzN_n5_jmUcBCPM_YhWHCAM8hQzPAiDlDMDH-lU3JzCHintiwbREgPgO_iSo2CIxaaCnytFoY7FUpiGI-EGgTXH7qOKy7-WAE7E8TAcffDfvVohWrrZCS4_V3eUozqm6JUmkHnH7J-bpf8v2gUKQhSPwmZ8XI1KcGW7aDgbJ8vXWbLFm3oDvJmfn-OnKMcZHIzCGLmBk-POLMMdqt2oLc"
+             alt="10L Rectangular" class="w-28 h-28 object-cover rounded-lg flex-shrink-0"/>
+        <div class="flex flex-col justify-center">
+          <h3 class="text-lg font-bold text-primary">10L Rectangular</h3>
+          <p class="text-secondary mt-1 text-sm">Classic design meets heavy-duty manufacturing with rose-gold highlights.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Manufacturing Strip -->
+  <section class="bg-primary text-white py-20 relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-1/3 h-full opacity-5 pointer-events-none flex items-center justify-end pr-8">
+      <span class="material-symbols-outlined text-[260px]" style="font-variation-settings:'wght' 100">factory</span>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 md:px-16 flex flex-col md:flex-row items-center gap-16">
+      <div class="md:w-1/2">
+        <h2 class="text-3xl font-bold mb-6">Built in Kundli, Trusted Nationwide</h2>
+        <p class="text-yellow-200 mb-8 leading-relaxed">
+          Our state-of-the-art facility at HSIIDC, Kundli, Sonipat is where industrial precision meets artisanal polishing. Committed to 'Make in India' excellence — every piece of GCS hotelware exceeds luxury standards.
+        </p>
+        <div class="grid grid-cols-2 gap-8">
+          <div class="border-l-2 border-primary-container pl-4">
+            <div class="text-4xl font-black text-yellow-300">100%</div>
+            <div class="text-xs font-bold uppercase tracking-widest text-yellow-200 mt-1">Stainless Steel</div>
+          </div>
+          <div class="border-l-2 border-primary-container pl-4">
+            <div class="text-4xl font-black text-yellow-300">25+</div>
+            <div class="text-xs font-bold uppercase tracking-widest text-yellow-200 mt-1">Years of Experience</div>
+          </div>
+        </div>
+      </div>
+      <div class="md:w-1/2 grid grid-cols-2 gap-4">
+        <div class="bg-primary-container text-on-primary-container aspect-square flex items-center justify-center p-8 rounded-xl shadow-lg">
+          <div class="text-center">
+            <span class="material-symbols-outlined text-5xl mb-2 block">verified</span>
+            <div class="font-bold">ISO Certified</div>
+          </div>
+        </div>
+        <div class="bg-secondary text-white aspect-square flex items-center justify-center p-8 rounded-xl shadow-lg">
+          <div class="text-center">
+            <span class="material-symbols-outlined text-5xl mb-2 block">precision_manufacturing</span>
+            <div class="font-bold">CNC Machined</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 bg-surface-container text-center">
+    <div class="max-w-2xl mx-auto px-4">
+      <h2 class="text-4xl font-black text-primary mb-6">Ready to upgrade your buffet service?</h2>
+      <p class="text-secondary text-lg mb-10">Join hundreds of leading hotels and catering services that trust GCS Steel for their premium golden hotelware needs.</p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="contact.html" class="gold-gradient text-white px-10 py-4 rounded-lg text-xs font-bold uppercase tracking-widest hover:opacity-90 shadow-lg transition-all flex items-center justify-center gap-2">
+          Request a Quote <span class="material-symbols-outlined text-sm">send</span>
+        </a>
+        <a href="catalog.html" class="bg-surface text-primary border-2 border-primary-container px-10 py-4 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-surface-container-high transition-all">
+          Browse Catalog
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section class="py-16 bg-surface-container-highest">
+    <div class="max-w-7xl mx-auto px-4 md:px-16 flex flex-col md:flex-row items-center gap-10">
+      <div class="md:w-1/2">
+        <h3 class="text-2xl font-bold text-primary mb-3">Our Manufacturing Hub</h3>
+        <address class="not-italic text-secondary leading-relaxed">
+          121, Phase IV, HSIIDC, Sector 57,<br/>Kundli, Sonipat, Haryana – 131028
+        </address>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <a href="contact.html" class="flex items-center gap-2 text-primary font-semibold text-sm hover:text-primary-container transition-colors">
+            <span class="material-symbols-outlined text-sm">call</span> Get in Touch
+          </a>
+          <a href="https://maps.google.com/?q=HSIIDC+Kundli+Sonipat" target="_blank" rel="noopener" class="flex items-center gap-2 text-primary font-semibold text-sm hover:text-primary-container transition-colors">
+            <span class="material-symbols-outlined text-sm">location_on</span> View on Maps
+          </a>
+        </div>
+      </div>
+      <div class="md:w-1/2 bg-surface-container rounded-xl h-48 flex items-center justify-center border border-outline-variant">
+        <div class="text-center text-secondary">
+          <span class="material-symbols-outlined text-5xl text-primary-container block mb-2">location_on</span>
+          <p class="text-sm font-semibold">HSIIDC, Kundli Industrial Area</p>
+          <p class="text-xs text-outline">Sonipat, Haryana</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════════════ -->
+<footer class="bg-surface-container-highest border-t border-outline-variant py-16 px-4 md:px-16">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-12">
+    <div class="max-w-xs">
+      <span class="text-xl font-black text-primary block mb-3">GCS STEEL</span>
+      <p class="text-secondary text-sm leading-relaxed">Crafting the future of hospitality with golden industrial-grade stainless steel. Manufactured in Kundli, Sonipat.</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-10 text-sm">
+      <div>
+        <p class="font-bold text-primary uppercase text-xs tracking-widest mb-4">Products</p>
+        <div class="flex flex-col gap-2 text-secondary">
+          <a href="catalog.html" class="hover:text-primary transition-colors">Hydraulic Series</a>
+          <a href="catalog.html" class="hover:text-primary transition-colors">Standard Collection</a>
+          <a href="catalog.html" class="hover:text-primary transition-colors">Food Warmers</a>
+        </div>
+      </div>
+      <div>
+        <p class="font-bold text-primary uppercase text-xs tracking-widest mb-4">Company</p>
+        <div class="flex flex-col gap-2 text-secondary">
+          <a href="about.html" class="hover:text-primary transition-colors">About Us</a>
+          <a href="about.html" class="hover:text-primary transition-colors">Manufacturing</a>
+          <a href="contact.html" class="hover:text-primary transition-colors">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p class="font-bold text-primary uppercase text-xs tracking-widest mb-4">Info</p>
+        <div class="flex flex-col gap-2 text-secondary">
+          <span class="text-xs">GSTIN: 06ADRPG2753L1Z7</span>
+          <span class="text-xs">HSN: 7323</span>
+          <a href="admin.html" class="text-outline text-xs hover:text-primary transition-colors">Admin ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4">
+    <p class="text-outline text-xs">© 2024 GCS Steel India. All rights reserved. Kundli, Sonipat, Haryana.</p>
+    <div class="flex gap-4 text-xs text-secondary">
+      <span>Stainless Steel Hotelware Manufacturer</span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+</body>
+</html>

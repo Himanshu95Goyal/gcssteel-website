@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin | GCS STEEL</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      primary:'#735c00','primary-container':'#d4af37','on-primary':'#ffffff','on-primary-container':'#554300',
+      secondary:'#8c4b55','secondary-container':'#feaab6',
+      surface:'#fbf9f4','surface-container':'#f0eee9','surface-container-low':'#f5f3ee',
+      'surface-container-high':'#eae8e3','surface-container-highest':'#e4e2dd','surface-container-lowest':'#ffffff',
+      'on-surface':'#1b1c19','on-surface-variant':'#4d4635',outline:'#7f7663','outline-variant':'#d0c5af',tertiary:'#586062',
+    },
+    fontFamily:{sans:['Montserrat','sans-serif']},
+  }}
+}
+</script>
+<style>
+  *{font-family:'Montserrat',sans-serif;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;}
+  .gold-gradient{background:linear-gradient(135deg,#d4af37 0%,#735c00 100%);}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#d4af37;box-shadow:0 0 0 2px rgba(212,175,55,.2);}
+  .shake{animation:shake .4s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+  #toast{transition:all .3s ease;}
+  .tab-btn.active{background:#d4af37;color:#554300;border-color:#d4af37;}
+</style>
+</head>
+<body class="bg-surface-container min-h-screen">
+
+<!-- ═══ LOGIN SCREEN ══════════════════════════════════════════════════════ -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center px-4">
+  <div id="login-card" class="bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant p-10 w-full max-w-sm">
+    <div class="text-center mb-8">
+      <span class="text-3xl font-black text-primary block mb-1">GCS STEEL</span>
+      <span class="text-xs font-bold text-outline uppercase tracking-widest">Admin Panel</span>
+    </div>
+    <div id="login-error" class="hidden mb-4 text-red-600 text-sm font-semibold text-center bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+      Incorrect password. Please try again.
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-1.5">Password</label>
+        <input id="password-input" type="password" placeholder="Enter admin password"
+          class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm bg-surface-container-lowest"
+          autocomplete="current-password"/>
+      </div>
+      <button id="login-btn" class="w-full gold-gradient text-white py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">lock_open</span> Sign In
+      </button>
+    </div>
+    <p class="mt-6 text-center text-xs text-outline">
+      <a href="index.html" class="hover:text-primary transition-colors">← Back to website</a>
+    </p>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ══════════════════════════════════════════════════════════ -->
+<div id="dashboard" class="hidden min-h-screen flex flex-col">
+
+  <!-- Top bar -->
+  <header class="bg-surface border-b border-outline-variant h-16 flex items-center px-6 gap-4 flex-shrink-0 sticky top-0 z-30">
+    <span class="text-lg font-black text-primary">GCS STEEL</span>
+    <span class="text-xs font-bold text-outline uppercase tracking-widest hidden sm:inline">Admin</span>
+    <div class="ml-auto flex items-center gap-3">
+      <a href="index.html" target="_blank" class="text-xs text-secondary hover:text-primary transition-colors flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm">open_in_new</span> View Site
+      </a>
+      <button id="logout-btn" class="text-xs text-secondary hover:text-red-600 transition-colors flex items-center gap-1 font-semibold">
+        <span class="material-symbols-outlined text-sm">logout</span> Logout
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-56 bg-surface border-r border-outline-variant flex flex-col flex-shrink-0 hidden md:flex">
+      <nav class="flex flex-col gap-1 p-4 flex-1">
+        <button onclick="showView('add-product')" data-view="add-product"
+          class="sidebar-nav flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-secondary hover:bg-surface-container hover:text-primary transition-colors text-left">
+          <span class="material-symbols-outlined text-sm">add_circle</span> Add Product
+        </button>
+        <button onclick="showView('all-products')" data-view="all-products"
+          class="sidebar-nav flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-secondary hover:bg-surface-container hover:text-primary transition-colors text-left">
+          <span class="material-symbols-outlined text-sm">inventory_2</span> All Products
+        </button>
+        <button onclick="showView('inquiries')" data-view="inquiries"
+          class="sidebar-nav flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-secondary hover:bg-surface-container hover:text-primary transition-colors text-left">
+          <span class="material-symbols-outlined text-sm">mail</span> Inquiries
+          <span id="inquiry-badge" class="hidden ml-auto bg-secondary text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">0</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 overflow-y-auto p-6">
+
+      <!-- Mobile tabs -->
+      <div class="flex gap-2 mb-6 md:hidden">
+        <button onclick="showView('add-product')" class="tab-btn flex-1 border border-outline-variant px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-secondary transition-all" data-view="add-product">Add</button>
+        <button onclick="showView('all-products')" class="tab-btn flex-1 border border-outline-variant px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-secondary transition-all" data-view="all-products">Products</button>
+        <button onclick="showView('inquiries')" class="tab-btn flex-1 border border-outline-variant px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-secondary transition-all" data-view="inquiries">Inquiries</button>
+      </div>
+
+      <!-- ── ADD/EDIT PRODUCT FORM ── -->
+      <div id="view-add-product" class="view-panel">
+        <div class="flex items-center justify-between mb-6">
+          <h1 id="form-title" class="text-2xl font-black text-primary">Add New Product</h1>
+          <button id="clear-form-btn" class="text-xs text-outline hover:text-primary transition-colors font-semibold uppercase tracking-wider">Clear Form</button>
+        </div>
+        <input type="hidden" id="edit-id"/>
+
+        <div id="form-msg" class="hidden mb-4 px-4 py-3 rounded-lg text-sm font-semibold"></div>
+
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-1.5">Product Name *</label>
+              <input id="p-name" type="text" placeholder="e.g. Majestic Rectangular Hydraulic"
+                class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm bg-surface-container-lowest"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-1.5">Category *</label>
+              <select id="p-category" class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm bg-surface-container-lowest">
+                <option value="">Select…</option>
+                <option>Hydraulic Series</option>
+                <option>Standard Collection</option>
+                <option>Food Warmers</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-1.5">Capacity</label>
+              <input id="p-capacity" type="text" placeholder="e.g. 11.45L"
+                class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm bg-surface-container-lowest"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-1.5">Shape</label>
+              <select id="p-shape" class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm bg-surface-container-lowest">
+                <option value="">Select…</option>
+                <option>Rectangular</option>
+                <option>Round</option>
+                <option>Oval</option>
+                <option>Square</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-1.5">Finish</label>
+              <input id="p-finish" type="text" placeholder="e.g. Gold / SS 304"
+                class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm bg-surface-container-lowest"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-1.5">Badge Label <span class="text-outline font-normal normal-case">(optional)</span></label>
+              <input id="p-badge" type="text" placeholder="e.g. Top Seller"
+                class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm bg-surface-container-lowest"/>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-1.5">Description *</label>
+            <textarea id="p-description" rows="3" placeholder="Describe the product — materials, features, specifications…"
+              class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm bg-surface-container-lowest resize-none"></textarea>
+          </div>
+
+          <!-- Image upload -->
+          <div>
+            <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-1.5">Product Image</label>
+            <div class="flex flex-col sm:flex-row gap-4 items-start">
+              <div class="flex-1">
+                <label for="p-image-file" class="flex items-center gap-2 cursor-pointer bg-surface-container border-2 border-dashed border-outline-variant hover:border-primary-container rounded-lg px-4 py-6 text-sm text-secondary hover:text-primary transition-all justify-center">
+                  <span class="material-symbols-outlined">upload</span>
+                  <span id="file-label">Click to upload image</span>
+                </label>
+                <input id="p-image-file" type="file" accept="image/*" class="hidden"/>
+              </div>
+              <div class="text-center text-xs text-outline font-semibold py-3">OR</div>
+              <div class="flex-1">
+                <input id="p-image-url" type="url" placeholder="Paste image URL directly"
+                  class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm bg-surface-container-lowest"/>
+              </div>
+            </div>
+            <!-- Preview -->
+            <div id="image-preview-wrap" class="hidden mt-4">
+              <p class="text-xs font-bold text-outline uppercase tracking-wider mb-2">Preview</p>
+              <img id="image-preview" src="" alt="Preview" class="h-40 w-auto rounded-lg border border-outline-variant object-cover shadow-sm"/>
+            </div>
+          </div>
+
+          <div class="flex gap-3 pt-2">
+            <button id="save-product-btn" class="gold-gradient text-white px-8 py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-sm">save</span>
+              <span id="save-btn-text">Save Product</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ALL PRODUCTS ── -->
+      <div id="view-all-products" class="view-panel hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-2xl font-black text-primary">All Products</h1>
+          <button onclick="showView('add-product')" class="gold-gradient text-white px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">add</span> Add New
+          </button>
+        </div>
+        <div id="products-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div class="col-span-full text-center py-12 text-secondary">
+            <span class="material-symbols-outlined text-4xl text-outline block mb-3 animate-spin">sync</span>
+            Loading products…
+          </div>
+        </div>
+      </div>
+
+      <!-- ── INQUIRIES ── -->
+      <div id="view-inquiries" class="view-panel hidden">
+        <h1 class="text-2xl font-black text-primary mb-6">Customer Inquiries</h1>
+        <div id="inquiries-list" class="space-y-4">
+          <div class="text-center py-12 text-secondary">
+            <span class="material-symbols-outlined text-4xl text-outline block mb-3 animate-spin">sync</span>
+            Loading inquiries…
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-2xl text-white text-sm font-bold flex items-center gap-2 opacity-0 pointer-events-none max-w-xs"></div>
+
+<!-- Confirm modal -->
+<div id="confirm-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
+  <div class="bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant p-8 max-w-sm w-full">
+    <h3 class="text-lg font-bold text-on-surface mb-2">Confirm Delete</h3>
+    <p class="text-secondary text-sm mb-6">Are you sure you want to delete this product? This cannot be undone.</p>
+    <div class="flex gap-3">
+      <button id="confirm-cancel" class="flex-1 border border-outline-variant px-4 py-2.5 rounded-lg text-sm font-semibold text-secondary hover:bg-surface-container transition-all">Cancel</button>
+      <button id="confirm-ok" class="flex-1 bg-red-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-red-700 transition-all">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCRIPTS ════════════════════════════════════════════════════════════ -->
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+// REPLACE with your Firebase config
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const ADMIN_PASSWORD = 'gcssteel2024'; // Change this!
+
+// ── FIREBASE ─────────────────────────────────────────────────────────────────
+let db, storage, firebaseReady = false;
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  storage = firebase.storage();
+  firebaseReady = firebaseConfig.apiKey !== 'YOUR_API_KEY';
+} catch(e) {}
+
+// ── LOGIN ────────────────────────────────────────────────────────────────────
+function checkLogin() {
+  if (sessionStorage.getItem('gcs_admin') === '1') showDashboard();
+}
+
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('password-input').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function doLogin() {
+  const pw = document.getElementById('password-input').value;
+  if (pw === ADMIN_PASSWORD) {
+    sessionStorage.setItem('gcs_admin','1');
+    showDashboard();
+  } else {
+    const card = document.getElementById('login-card');
+    const err = document.getElementById('login-error');
+    err.classList.remove('hidden');
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 500);
+  }
+}
+
+function showDashboard() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  showView('add-product');
+  if (firebaseReady) {
+    loadProducts();
+    loadInquiries();
+  }
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  sessionStorage.removeItem('gcs_admin');
+  location.reload();
+});
+
+// ── VIEW SWITCHER ─────────────────────────────────────────────────────────────
+function showView(view) {
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.add('hidden'));
+  document.getElementById('view-' + view).classList.remove('hidden');
+  // Highlight sidebar
+  document.querySelectorAll('.sidebar-nav').forEach(btn => {
+    const isActive = btn.dataset.view === view;
+    btn.classList.toggle('bg-surface-container', isActive);
+    btn.classList.toggle('text-primary', isActive);
+    btn.classList.toggle('font-bold', isActive);
+  });
+  // Mobile tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+}
+
+// ── TOAST ────────────────────────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.innerHTML = `<span class="material-symbols-outlined text-sm">${type === 'success' ? 'check_circle' : 'error'}</span>${msg}`;
+  el.className = `fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-2xl text-white text-sm font-bold flex items-center gap-2 max-w-xs ${type === 'success' ? 'bg-green-700' : 'bg-red-700'}`;
+  el.style.opacity = '1';
+  setTimeout(() => { el.style.opacity = '0'; el.style.pointerEvents = 'none'; }, 3000);
+}
+
+// ── IMAGE PREVIEW ─────────────────────────────────────────────────────────────
+document.getElementById('p-image-file').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('file-label').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('image-preview').src = ev.target.result;
+    document.getElementById('image-preview-wrap').classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+  // Clear URL field
+  document.getElementById('p-image-url').value = '';
+});
+
+document.getElementById('p-image-url').addEventListener('input', e => {
+  const url = e.target.value.trim();
+  if (url) {
+    document.getElementById('image-preview').src = url;
+    document.getElementById('image-preview-wrap').classList.remove('hidden');
+    document.getElementById('p-image-file').value = '';
+    document.getElementById('file-label').textContent = 'Click to upload image';
+  } else {
+    document.getElementById('image-preview-wrap').classList.add('hidden');
+  }
+});
+
+// ── SAVE PRODUCT ──────────────────────────────────────────────────────────────
+document.getElementById('save-product-btn').addEventListener('click', async () => {
+  const name = document.getElementById('p-name').value.trim();
+  const cat  = document.getElementById('p-category').value;
+  const desc = document.getElementById('p-description').value.trim();
+
+  if (!name || !cat || !desc) {
+    showFormMsg('Please fill in Name, Category, and Description.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('save-product-btn');
+  const btnText = document.getElementById('save-btn-text');
+  btn.disabled = true;
+  btnText.textContent = 'Saving…';
+
+  let imageUrl = document.getElementById('p-image-url').value.trim();
+
+  // Upload file if selected
+  const file = document.getElementById('p-image-file').files[0];
+  if (file && firebaseReady) {
+    try {
+      const ref = storage.ref(`products/${Date.now()}_${file.name}`);
+      await ref.put(file);
+      imageUrl = await ref.getDownloadURL();
+    } catch (uploadErr) {
+      console.warn('Upload failed, using URL fallback:', uploadErr);
+    }
+  }
+
+  const editId = document.getElementById('edit-id').value;
+  const payload = {
+    name,
+    category:    cat,
+    capacity:    document.getElementById('p-capacity').value.trim() || 'N/A',
+    shape:       document.getElementById('p-shape').value || 'Rectangular',
+    finish:      document.getElementById('p-finish').value.trim() || '',
+    badge:       document.getElementById('p-badge').value.trim() || '',
+    description: desc,
+    imageUrl:    imageUrl || '',
+    updatedAt:   firebaseReady ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
+  };
+
+  try {
+    if (!firebaseReady) throw new Error('Firebase not configured');
+
+    if (editId) {
+      await db.collection('products').doc(editId).update(payload);
+      toast('Product updated!');
+    } else {
+      payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection('products').add(payload);
+      toast('Product added to catalog!');
+    }
+    clearForm();
+    showView('all-products');
+    loadProducts();
+  } catch (err) {
+    console.error(err);
+    showFormMsg('Error: ' + (err.message || 'Could not save. Check Firebase config.'), 'error');
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = editId ? 'Update Product' : 'Save Product';
+  }
+});
+
+function showFormMsg(msg, type) {
+  const el = document.getElementById('form-msg');
+  el.textContent = msg;
+  el.className = `mb-4 px-4 py-3 rounded-lg text-sm font-semibold ${type === 'error' ? 'bg-red-50 border border-red-200 text-red-700' : 'bg-green-50 border border-green-200 text-green-700'}`;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 5000);
+}
+
+function clearForm() {
+  document.getElementById('edit-id').value = '';
+  document.getElementById('form-title').textContent = 'Add New Product';
+  document.getElementById('save-btn-text').textContent = 'Save Product';
+  ['p-name','p-capacity','p-finish','p-badge','p-description','p-image-url'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('p-category').value = '';
+  document.getElementById('p-shape').value = '';
+  document.getElementById('p-image-file').value = '';
+  document.getElementById('file-label').textContent = 'Click to upload image';
+  document.getElementById('image-preview-wrap').classList.add('hidden');
+  document.getElementById('form-msg').classList.add('hidden');
+}
+
+document.getElementById('clear-form-btn').addEventListener('click', clearForm);
+
+// ── LOAD & RENDER PRODUCTS ─────────────────────────────────────────────────
+async function loadProducts() {
+  const container = document.getElementById('products-list');
+  try {
+    const snap = await db.collection('products').orderBy('createdAt','desc').get();
+    if (snap.empty) {
+      container.innerHTML = '<div class="col-span-full text-center py-12 text-secondary"><span class="material-symbols-outlined text-4xl text-outline block mb-3">inventory_2</span>No products yet. Add your first one!</div>';
+      return;
+    }
+    container.innerHTML = snap.docs.map(doc => {
+      const p = doc.data();
+      return `
+      <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+        <div class="h-36 bg-surface-container overflow-hidden">
+          <img src="${p.imageUrl || 'https://via.placeholder.com/400x200/f0eee9/735c00?text=No+Image'}"
+               alt="${p.name}" class="w-full h-full object-cover"
+               onerror="this.src='https://via.placeholder.com/400x200/f0eee9/735c00?text=No+Image'"/>
+        </div>
+        <div class="p-4">
+          <p class="text-[10px] font-bold text-outline uppercase tracking-wider">${p.category}</p>
+          <h3 class="font-bold text-primary text-sm mt-0.5 mb-3 line-clamp-2">${p.name}</h3>
+          <div class="flex gap-2">
+            <button onclick="editProduct('${doc.id}')"
+              class="flex-1 flex items-center justify-center gap-1 bg-surface-container text-primary border border-outline-variant px-3 py-2 rounded-lg text-xs font-bold hover:bg-primary-container hover:text-on-primary-container hover:border-primary-container transition-all">
+              <span class="material-symbols-outlined text-sm">edit</span> Edit
+            </button>
+            <button onclick="confirmDelete('${doc.id}', '${p.name.replace(/'/g,"\\'")}', '${p.imageUrl || ''}')"
+              class="flex-1 flex items-center justify-center gap-1 bg-red-50 text-red-600 border border-red-200 px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-600 hover:text-white hover:border-red-600 transition-all">
+              <span class="material-symbols-outlined text-sm">delete</span> Delete
+            </button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    container.innerHTML = `<div class="col-span-full text-center py-12 text-red-600 text-sm">${err.message}</div>`;
+  }
+}
+
+async function editProduct(id) {
+  try {
+    const doc = await db.collection('products').doc(id).get();
+    const p = doc.data();
+    document.getElementById('edit-id').value = id;
+    document.getElementById('p-name').value = p.name || '';
+    document.getElementById('p-category').value = p.category || '';
+    document.getElementById('p-capacity').value = p.capacity || '';
+    document.getElementById('p-shape').value = p.shape || '';
+    document.getElementById('p-finish').value = p.finish || '';
+    document.getElementById('p-badge').value = p.badge || '';
+    document.getElementById('p-description').value = p.description || '';
+    document.getElementById('p-image-url').value = p.imageUrl || '';
+    if (p.imageUrl) {
+      document.getElementById('image-preview').src = p.imageUrl;
+      document.getElementById('image-preview-wrap').classList.remove('hidden');
+    }
+    document.getElementById('form-title').textContent = 'Edit Product';
+    document.getElementById('save-btn-text').textContent = 'Update Product';
+    showView('add-product');
+    window.scrollTo(0,0);
+  } catch (err) { toast('Could not load product: ' + err.message, 'error'); }
+}
+
+let pendingDeleteId = '', pendingDeleteUrl = '';
+function confirmDelete(id, name, imageUrl) {
+  pendingDeleteId = id;
+  pendingDeleteUrl = imageUrl;
+  document.querySelector('#confirm-modal p').textContent = `Delete "${name}"? This cannot be undone.`;
+  document.getElementById('confirm-modal').classList.remove('hidden');
+}
+
+document.getElementById('confirm-cancel').addEventListener('click', () => {
+  document.getElementById('confirm-modal').classList.add('hidden');
+});
+
+document.getElementById('confirm-ok').addEventListener('click', async () => {
+  document.getElementById('confirm-modal').classList.add('hidden');
+  try {
+    await db.collection('products').doc(pendingDeleteId).delete();
+    // Try to delete storage file if it's a Firebase Storage URL
+    if (pendingDeleteUrl && pendingDeleteUrl.includes('firebasestorage')) {
+      try { await storage.refFromURL(pendingDeleteUrl).delete(); } catch(e) {}
+    }
+    toast('Product deleted.');
+    loadProducts();
+  } catch (err) { toast('Delete failed: ' + err.message, 'error'); }
+});
+
+// ── LOAD INQUIRIES ────────────────────────────────────────────────────────────
+async function loadInquiries() {
+  const container = document.getElementById('inquiries-list');
+  try {
+    const snap = await db.collection('inquiries').orderBy('timestamp','desc').get();
+    const badge = document.getElementById('inquiry-badge');
+
+    if (snap.empty) {
+      container.innerHTML = '<div class="text-center py-12 text-secondary"><span class="material-symbols-outlined text-4xl text-outline block mb-3">mail</span>No inquiries yet.</div>';
+      return;
+    }
+
+    const newCount = snap.docs.filter(d => d.data().status === 'new').length;
+    if (newCount > 0) {
+      badge.textContent = newCount;
+      badge.classList.remove('hidden');
+    }
+
+    container.innerHTML = snap.docs.map(doc => {
+      const q = doc.data();
+      const ts = q.timestamp?.toDate?.() ? q.timestamp.toDate().toLocaleString('en-IN') : q.timestamp || 'N/A';
+      const isNew = q.status === 'new';
+      return `
+      <div class="bg-surface-container-lowest rounded-xl border ${isNew ? 'border-primary-container' : 'border-outline-variant'} p-5">
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-bold text-on-surface">${q.name || 'Unknown'}</h3>
+              ${isNew ? '<span class="bg-primary-container text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">New</span>' : '<span class="bg-surface-container text-outline text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Read</span>'}
+            </div>
+            <p class="text-secondary text-sm">${q.company || ''} · ${q.phone || ''}</p>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <p class="text-xs text-outline">${ts}</p>
+            ${isNew ? `<button onclick="markRead('${doc.id}')" class="text-xs text-secondary hover:text-primary transition-colors font-semibold">Mark Read</button>` : ''}
+            <button onclick="deleteInquiry('${doc.id}')" class="text-xs text-red-500 hover:text-red-700 transition-colors font-semibold">Delete</button>
+          </div>
+        </div>
+        ${q.product ? `<p class="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Re: ${q.product}</p>` : ''}
+        <p class="text-secondary text-sm leading-relaxed">${q.message || ''}</p>
+        ${q.phone ? `<a href="https://wa.me/${q.phone.replace(/[^0-9]/g,'')}?text=Hi+${encodeURIComponent(q.name||'')}%2C+thank+you+for+your+inquiry+about+GCS+Steel+hotelware."
+          target="_blank" rel="noopener"
+          class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-container transition-colors">
+          <span class="material-symbols-outlined text-sm">chat</span> Reply on WhatsApp
+        </a>` : ''}
+      </div>`;
+    }).join('');
+  } catch (err) {
+    container.innerHTML = `<div class="text-center py-12 text-red-600 text-sm">${err.message}</div>`;
+  }
+}
+
+async function markRead(id) {
+  try { await db.collection('inquiries').doc(id).update({ status:'read' }); loadInquiries(); } catch(e) {}
+}
+async function deleteInquiry(id) {
+  if (!confirm('Delete this inquiry?')) return;
+  try { await db.collection('inquiries').doc(id).delete(); toast('Inquiry deleted.'); loadInquiries(); } catch(e) {}
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+checkLogin();
+
+if (!firebaseReady) {
+  // Show warning banner after dashboard loads
+  document.getElementById('dashboard').addEventListener('click', () => {}, { once: true });
+  setTimeout(() => {
+    if (document.getElementById('dashboard').classList.contains('hidden')) return;
+    const banner = document.createElement('div');
+    banner.className = 'bg-yellow-50 border-b border-yellow-300 text-yellow-800 text-xs font-semibold px-6 py-2 text-center';
+    banner.textContent = '⚠ Firebase not configured yet. Add your firebaseConfig values in admin.html, catalog.html, and contact.html to enable live data.';
+    document.getElementById('dashboard').insertBefore(banner, document.getElementById('dashboard').firstChild.nextSibling);
+  }, 500);
+}
+</script>
+</body>
+</html>
